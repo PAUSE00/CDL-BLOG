@@ -31,10 +31,25 @@ public class DatabaseConnection {
             }
 
             HikariConfig config = new HikariConfig();
-            config.setJdbcUrl(props.getProperty("db.url",
-                    "jdbc:mysql://localhost:3306/jee_blog?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8"));
-            config.setUsername(props.getProperty("db.user", "root"));
-            config.setPassword(props.getProperty("db.password", ""));
+
+            // Configuration Cloud (Railway) ou locale (db.properties)
+            String host = System.getenv("MYSQLHOST");
+            String port = System.getenv("MYSQLPORT");
+            String database = System.getenv("MYSQLDATABASE");
+
+            if (host != null && port != null && database != null) {
+                config.setJdbcUrl("jdbc:mysql://" + host + ":" + port + "/" + database
+                        + "?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8");
+            } else {
+                config.setJdbcUrl(props.getProperty("db.url",
+                        "jdbc:mysql://localhost:3306/jee_blog?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8"));
+            }
+
+            String envUser = System.getenv("MYSQLUSER");
+            config.setUsername(envUser != null ? envUser : props.getProperty("db.user", "root"));
+
+            String envPassword = System.getenv("MYSQLPASSWORD");
+            config.setPassword(envPassword != null ? envPassword : props.getProperty("db.password", ""));
             config.setMaximumPoolSize(Integer.parseInt(props.getProperty("db.pool.size", "10")));
             config.setMinimumIdle(Integer.parseInt(props.getProperty("db.pool.minIdle", "2")));
             config.setConnectionTimeout(Long.parseLong(props.getProperty("db.pool.connectionTimeout", "30000")));

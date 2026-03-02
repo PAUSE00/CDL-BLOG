@@ -81,16 +81,8 @@ public class InscriptionServlet extends HttpServlet {
             m.setMotDePasse(mdp);
 
             if (membreDAO.inscrire(m)) {
-                logger.info("Nouveau membre inscrit: {}", email);
-                // Envoi email de validation
-                try {
-                    EmailService.envoyerEmailValidation(email, m.getTokenValidation());
-                    req.setAttribute("succesInscription", email);
-                } catch (Exception e) {
-                    logger.warn("Impossible d'envoyer l'email de validation à {}: {}", email, e.getMessage());
-                    // En dev, afficher le lien directement
-                    req.setAttribute("tokenDev", m.getTokenValidation());
-                }
+                logger.info("Nouveau membre inscrit et activé: {}", email);
+                req.setAttribute("succesInscription", email);
                 req.getRequestDispatcher("/WEB-INF/jsp/inscription-succes.jsp").forward(req, res);
             } else {
                 req.setAttribute("erreur", "Erreur lors de l'inscription. Réessayez.");

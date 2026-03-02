@@ -11,7 +11,7 @@ public class MembreDAO {
 
     /** Inscrire un nouveau membre (non validé) */
     public boolean inscrire(Membre m) throws SQLException {
-        String sql = "INSERT INTO membres (nom, prenom, email, mot_de_passe, token_validation, valide) VALUES (?,?,?,?,?,false)";
+        String sql = "INSERT INTO membres (nom, prenom, email, mot_de_passe, token_validation, valide) VALUES (?,?,?,?,?,true)";
         String token = UUID.randomUUID().toString();
         String hashMdp = BCrypt.hashpw(m.getMotDePasse(), BCrypt.gensalt());
 

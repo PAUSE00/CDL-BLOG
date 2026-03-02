@@ -18,7 +18,7 @@ RUN rm -rf /usr/local/tomcat/webapps/ROOT
 
 # Copier notre WAR construit depuis l'étape précédente et le renommer en ROOT.war
 # Cela permet à l'application d'être accessible directement via l'URL racine (/)
-COPY --from=build /app/target/jee-blog-1.0-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.war
+COPY --from=build /app/target/jee-blog.war /usr/local/tomcat/webapps/ROOT.war
 
 # Exposer le port par défaut de Tomcat
 EXPOSE 8080

@@ -20,8 +20,14 @@ RUN rm -rf /usr/local/tomcat/webapps/ROOT
 # Cela permet à l'application d'être accessible directement via l'URL racine (/)
 COPY --from=build /app/target/jee-blog.war /usr/local/tomcat/webapps/ROOT.war
 
-# Exposer le port par défaut de Tomcat
+# Limiter la mémoire JVM pour Railway (free tier = 512MB)
+ENV JAVA_OPTS="-Xms128m -Xmx256m -XX:MaxMetaspaceSize=128m -XX:+UseSerialGC"
+
+# Railway utilise la variable PORT — configurer Tomcat pour l'écouter
+# Modifier server.xml pour utiliser $PORT au lieu du port 8080 par défaut
+RUN sed -i 's/port="8080"/port="${PORT:-8080}"/' /usr/local/tomcat/conf/server.xml
+
 EXPOSE 8080
 
-# Démarrer Tomcat
+# Démarrer Tomcat avec les options mémoire
 CMD ["catalina.sh", "run"]
